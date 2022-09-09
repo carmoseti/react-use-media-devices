@@ -1,4 +1,4 @@
-# React useuseMediaDevices
+# React useMediaDevices
 
 ## Introduction
 A react hook to use navigator.mediaDevices browser API
