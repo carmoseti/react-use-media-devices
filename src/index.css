@@ -1,0 +1,15 @@
+table {
+    border: solid 1px #000;
+}
+
+th, td {
+    border: solid 1px #000;
+}
+
+.positive {
+    color: seagreen;
+}
+
+.negative {
+    color: darkred;
+}
