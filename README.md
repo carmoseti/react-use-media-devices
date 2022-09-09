@@ -16,5 +16,5 @@ $ yarn dev
 View demo in browser - http://localhost:5173/
 
 ## Resources
-1. Mozilla MDN documentation - https://developer.mozilla.org/en-US/docs/Web/API/Geolocation
+1. Mozilla MDN documentation - https://developer.mozilla.org/en-US/docs/Web/API/Navigator/mediaDevices
 2. Vite JS - https://vitejs.dev/
