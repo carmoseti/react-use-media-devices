@@ -47,3 +47,7 @@ th, td {
 .user-media-video {
     transform: scaleX(-1);
 }
+
+select {
+    width: 100%;
+}

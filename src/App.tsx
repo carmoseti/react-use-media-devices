@@ -1,4 +1,4 @@
-import React, {FunctionComponent, LegacyRef, MutableRefObject, useEffect, useRef} from 'react'
+import React, {FunctionComponent, LegacyRef, MutableRefObject, useEffect, useRef, useState} from 'react'
 import {useMediaDevices} from "./lib"
 import {Tabs} from "./components/Tabs";
 
@@ -9,18 +9,27 @@ type Props = OwnProps;
 
 const App: FunctionComponent<Props> = (props) => {
     const {
+        audioInputDevices,
+        audioOutputDevices,
         availableDevices,
         enumerateDevices,
         getSupportedConstraints,
         isAvailable,
         screenShareStream,
+        selectedAudioInputDevice,
+        selectedAudioOutputDevice,
+        selectedVideoInputDevice,
         startScreenShare,
         startUserMedia,
         stopScreenShare,
         stopUserMedia,
         supportedConstraints,
-        userMediaStream
+        userMediaStream,
+        videoInputDevices
     } = useMediaDevices()
+
+    const [selectedAudioInputDeviceId, setSelectedAudioInputDeviceId] = useState<string>()
+    const [selectedVideoInputDeviceId, setSelectedVideoInputDeviceId] = useState<string>()
 
     const screenShareVideoRef: MutableRefObject<HTMLVideoElement | undefined> = useRef<HTMLVideoElement>()
     const userMediaVideoRef: MutableRefObject<HTMLVideoElement | undefined> = useRef<HTMLVideoElement>()
@@ -40,6 +49,21 @@ const App: FunctionComponent<Props> = (props) => {
             }
         }
     }, [userMediaStream, userMediaVideoRef])
+
+    useEffect(() => {
+        if (selectedAudioInputDeviceId || selectedVideoInputDeviceId) {
+            if (userMediaStream) {
+                startUserMedia({
+                    audio: selectedAudioInputDeviceId ? {
+                        deviceId: selectedAudioInputDeviceId
+                    } : true,
+                    video: selectedVideoInputDeviceId ? {
+                        deviceId: selectedVideoInputDeviceId
+                    } : true,
+                })
+            }
+        }
+    }, [selectedAudioInputDeviceId, selectedVideoInputDeviceId])
 
     return (
         <div>
@@ -71,6 +95,81 @@ const App: FunctionComponent<Props> = (props) => {
                                         </thead>
                                         <tbody>
                                         {availableDevices.map((device, i) => (
+                                            <tr key={i}>
+                                                <td>{device.deviceId}</td>
+                                                <td>{device.groupId}</td>
+                                                <td>{device.kind}</td>
+                                                <td>{device.label}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            {audioInputDevices &&
+                                <div>
+                                    <h3>Audio Input Devices</h3>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>Device Id</th>
+                                            <th>Group Id</th>
+                                            <th>Kind</th>
+                                            <th>Label</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {audioInputDevices.map((device, i) => (
+                                            <tr key={i}>
+                                                <td>{device.deviceId}</td>
+                                                <td>{device.groupId}</td>
+                                                <td>{device.kind}</td>
+                                                <td>{device.label}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            {audioOutputDevices &&
+                                <div>
+                                    <h3>Audio Output Devices</h3>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>Device Id</th>
+                                            <th>Group Id</th>
+                                            <th>Kind</th>
+                                            <th>Label</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {audioOutputDevices.map((device, i) => (
+                                            <tr key={i}>
+                                                <td>{device.deviceId}</td>
+                                                <td>{device.groupId}</td>
+                                                <td>{device.kind}</td>
+                                                <td>{device.label}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            {videoInputDevices &&
+                                <div>
+                                    <h3>Video Input Devices</h3>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>Device Id</th>
+                                            <th>Group Id</th>
+                                            <th>Kind</th>
+                                            <th>Label</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {videoInputDevices.map((device, i) => (
                                             <tr key={i}>
                                                 <td>{device.deviceId}</td>
                                                 <td>{device.groupId}</td>
@@ -161,12 +260,42 @@ const App: FunctionComponent<Props> = (props) => {
                                 height: '100%',
                                 padding: 8
                             }}>
+                                {audioInputDevices &&
+                                    <div>
+                                        <span>Audio Input</span>&nbsp;
+                                        <select value={selectedAudioInputDevice?.deviceId}
+                                                onChange={(...args) => {
+                                                    setSelectedAudioInputDeviceId(args[0].target.value)
+                                                }}>
+                                            {audioInputDevices.map((a) => (
+                                                <option key={a.deviceId} value={a.deviceId}>{a.label}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                }
+                                {videoInputDevices &&
+                                    <div>
+                                        <span>Video Input</span>&nbsp;
+                                        <select value={selectedVideoInputDevice?.deviceId}
+                                                onChange={(...args) => {
+                                                    setSelectedVideoInputDeviceId(args[0].target.value)
+                                                }}>
+                                            {videoInputDevices.map((a) => (
+                                                <option key={a.deviceId} value={a.deviceId}>{a.label}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                }
                                 {!userMediaStream &&
                                     <p>
                                         <button onClick={() => {
                                             startUserMedia({
-                                                audio: true,
-                                                video: true
+                                                audio: selectedAudioInputDeviceId ? {
+                                                    deviceId: selectedAudioInputDeviceId
+                                                } : true,
+                                                video: selectedVideoInputDeviceId ? {
+                                                    deviceId: selectedVideoInputDeviceId
+                                                } : true,
                                             })
                                         }}>Start User Media!
                                         </button>
