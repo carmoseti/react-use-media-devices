@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 table {
     border: solid 1px #000;
 }
@@ -12,4 +16,34 @@ th, td {
 
 .negative {
     color: darkred;
+}
+
+.tab-container {
+    width: 100%;
+}
+
+.tab-links{
+    width: 100%;
+}
+
+.tab-links > button {
+    margin: 8px 8px 8px 0;
+    cursor: pointer;
+}
+
+.tab-content {
+    width: 100%;
+    border: solid 1px #ECECEC;
+    padding: 8px;
+}
+
+.tab-active {
+    background: forestgreen;
+    color: #fff;
+    border: solid 2px forestgreen;
+    cursor: default !important;
+}
+
+.user-media-video {
+    transform: scaleX(-1);
 }
